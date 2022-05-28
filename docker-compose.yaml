@@ -1,0 +1,70 @@
+version: '3'
+
+services:
+
+  # servico web nodejs
+  app:
+    build: 
+      context: ./app
+      dockerfile: Dockerfile
+    image: elielsimoncelo/fc-desafio-nginx-nodejs-app
+    container_name: fc-desafio-nginx-nodejs-app
+    entrypoint: dockerize -wait tcp://db:3306 -timeout 60s docker-entrypoint.sh
+    command:
+      - node
+      - ./bin/www
+    environment:
+      - DB_HOST=db
+    restart: always
+    tty: true
+    depends_on:
+      - db
+    networks:
+      - desafio-network
+
+  # base de dados mysql
+  db:
+    build: 
+      context: ./db
+      dockerfile: Dockerfile
+    image: elielsimoncelo/fc-desafio-nginx-nodejs-db
+    container_name: fc-desafio-nginx-nodejs-db
+    command:
+      - --innodb-use-native-aio=0
+      - --default-authentication-plugin=mysql_native_password
+      - --table_definition_cache=100
+      - --performance_schema=0
+    volumes:
+      - ./.mysql-data:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: app
+      MYSQL_USER: app
+      MYSQL_PASSWORD: app
+    ports:
+      - "3306:3306"
+    restart: always
+    tty: true
+    networks:
+      - desafio-network
+
+  # nginx como proxy reverso para o nodejs
+  proxy:
+    build: 
+      context: ./proxy
+      dockerfile: Dockerfile
+    image: elielsimoncelo/fc-desafio-nginx-nodejs-proxy
+    container_name: fc-desafio-nginx-nodejs-proxy
+    ports:
+      - "8080:80"
+    tty: true
+    networks:
+      - desafio-network
+    depends_on:
+      - db
+      - app
+
+networks:
+  desafio-network:
+    driver: bridge

@@ -1,0 +1,30 @@
+extends layout
+
+block content
+  h1= title
+  p Bem-vindo ao #{title}
+
+  h3 Cadastro de pessoa
+
+  div(style={background: "#F8F8F8", padding: "1em"})
+    form(action="/", method="post")
+      p
+        input(type="text", name="name", placeholder="Informe o nome", required)
+      p
+        input(type="submit", value="Adicionar")
+  
+  h3 Lista de pessoas
+  
+  if people.length > 0
+    table(margin: 'auto')
+      tr
+        th Id
+        th Nome
+      each person in people
+        tr
+          td= person.id
+          td= person.name
+  else
+    p Não há pessoas
+  end
+  
