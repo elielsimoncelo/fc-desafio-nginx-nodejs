@@ -2,6 +2,7 @@ FROM node:18-alpine
 
 WORKDIR /app
 
+RUN apk update
 RUN apk add --no-cache openssl wget
 
 ENV DOCKERIZE_VERSION v0.6.1
