@@ -285,9 +285,6 @@ dist
 # ignore generated binaries
 # but not the data folder
 
-/bin/*
-!/bin/data/
-
 # general
 
 [Bb]uild/
@@ -403,7 +400,6 @@ x86/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
 bld/
-[Bb]in/
 [Ll]og/
 [Ll]ogs/
 
