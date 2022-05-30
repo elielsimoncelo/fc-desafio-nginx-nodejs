@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const createError = require('http-errors');
-const PeopleDbConnection = require('../data/people-dbconnection');
+const PeopleDbConnection = require('../data/people-db-connection');
 
 router.get('/', function(req, res, next) {
   const db = PeopleDbConnection();
